@@ -5,19 +5,27 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class Tasks{
     public static void main(String[] args) {
-        BlockingQueue<Task> queue = new LinkedBlockingQueue<>();
+        BlockingQueue<Task> queue = new LinkedBlockingQueue<>(2);
         List<Task> takeList = new ArrayList<>();
         Task t1 = new Task("send email");
         Task t2 = new Task("Generate Report");
         Task t3 = new Task("Process Payment");
         Task t4 = new Task("resize Image");
         Task t5 = new Task("Send Notification");
+        Task stop1= new Task("STOP");
+        Task stop2 = new Task("STOP");
+        Task stop3 = new Task("STOP");
+
 
         takeList.add(t1);
         takeList.add(t2);
         takeList.add(t3);
         takeList.add(t4);
         takeList.add(t5);
+        takeList.add(stop1);
+        takeList.add(stop2);
+        takeList.add(stop3);
+        
 
         Producer p = new Producer(queue, takeList);
 
@@ -32,6 +40,7 @@ public class Tasks{
          producerThread.start();
          workerThread1.start();
          workerThread2.start();
+         workerThread3.start(); 
          workerThread3.start();
 
         
@@ -81,6 +90,9 @@ public void run() {
     try {
         while (true) {
             Task t = tasks.take();
+            if(t.name.equals("STOP")){
+                break;
+            }
             t.execute();
         }
     } catch (InterruptedException e) {
